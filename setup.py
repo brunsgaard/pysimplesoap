@@ -1,19 +1,11 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-
 import os
 import subprocess
 import sys
 import warnings
-
-try:
-    from nsis import build_installer
-except:
-    build_installer = None
-
-#from aiopss import __version__, __author__, __author_email__, __license__
-# convert the README and format in restructured text (only when registering)
+from aiopss import __version__
 for name in ('soap2py', 'PySimpleSOAP'):
     setup(
         name=name,
@@ -40,6 +32,17 @@ for name in ('soap2py', 'PySimpleSOAP'):
         ],
     )
 =======
+=======
+long_desc = ""
+if os.path.exists("README.md") and sys.platform == "linux2":
+    try:
+        cmd = ['pandoc', '--from=markdown', '--to=rst', 'README.md']
+        long_desc = subprocess.check_output(cmd).decode("utf8")
+        print("Long DESC", long_desc)
+    except Exception as e:
+        warnings.warn("Exception when converting the README format: %s" % e)
+
+>>>>>>> master
 
 setup(
     name='aiopss',
@@ -63,4 +66,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 )
+<<<<<<< HEAD
 >>>>>>> Improved transport, and close methods.
+=======
+>>>>>>> master

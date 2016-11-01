@@ -40,6 +40,7 @@ from .wsse import UsernameToken
 from copy import deepcopy
 from functools import partial
 
+
 log = logging.getLogger(__name__)
 
 class SoapFault(RuntimeError):
