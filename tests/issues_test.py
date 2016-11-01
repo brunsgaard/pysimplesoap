@@ -7,6 +7,8 @@ import httplib2
 import socket
 from xml.parsers.expat import ExpatError
 from pysimplesoap.client import SoapClient, SimpleXMLElement, SoapFault
+from pysimplesoap.helpers import Alias
+from pysimplesoap.transport import set_http_wrapper
 from .dummy_utils import DummyHTTP, TEST_DIR
 
 import sys
@@ -22,6 +24,17 @@ class TestIssues(unittest.TestCase):
         client = SoapClient(
             wsdl='http://uat.destin8.co.uk:80/ChiefEDI/ChiefEDI?wsdl'
         )
+
+    def test_issue33(self):
+        """Test SSL/TLS connection to self-signed or invalid hostname"""
+        # correct hostname is wsaahomo.afip.gov.ar, so avoid cert validation: 
+        wsdl = "https://wsaahomo.afip.gob.ar/ws/services/LoginCms?wsdl"
+        client = SoapClient(wsdl=wsdl, cert=None, cacert=None)
+        # TODO: handle incorrect or invalid certificate connection...
+
+    def test_issue33_fix(self):
+        set_http_wrapper('urllib2')
+        client = SoapClient(sessions=True)
 
     def test_issue34(self):
         """Test soap_server SoapClient constructor parameter"""
@@ -243,6 +256,10 @@ class TestIssues(unittest.TestCase):
             self.assertIsNotNone(question)
             self.assertNotEqual(question, "")
 
+    def test_issue65(self):
+        client = SoapClient()
+        valid = client.wsdl_validate_params(Alias(float, 'double'), 10.7)
+        self.assertTrue(valid[0], valid[1:])
                             
     def test_issue66(self):
         """Verify marshaled requests can be sent with no children"""
@@ -647,6 +664,7 @@ ageResult></AddPackageResponse></soap:Body></soap:Envelope>
 if __name__ == '__main__':
     #unittest.main()
     suite = unittest.TestSuite()
+    suite.addTest(TestIssues('test_issue33'))
     #suite.addTest(TestIssues('test_issue34'))
     #suite.addTest(TestIssues('test_issue93'))
     #suite.addTest(TestIssues('test_issue57'))
@@ -659,5 +677,5 @@ if __name__ == '__main__':
     #suite.addTest(TestIssues('test_issue130'))
     #suite.addTest(TestIssues('test_issue141'))
     #suite.addTest(TestIssues('test_issue143'))
-    suite.addTest(TestIssues('test_issue157'))
+    #suite.addTest(TestIssues('test_issue157'))
     unittest.TextTestRunner().run(suite)
