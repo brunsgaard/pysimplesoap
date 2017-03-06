@@ -1,3 +1,6 @@
+As of 2017 [Zeep](http://docs.python-zeep.org) is the better option for async SOAP in Python.
+
+
 Asyncio PySimpleSOAP
 ====================
 The `aiopss` package is a fork of PySimpleSoap v1.16 and offers a SOAP client
